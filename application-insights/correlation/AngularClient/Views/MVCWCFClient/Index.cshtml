@@ -14,7 +14,9 @@
 <h2>Consuming WCF REST Service in Angular JS</h2>
 <body ng-app="RESTClientModule">
     <div ng-controller="RESTClientController">
-
+        Radius of circle: <input type="number" ng-model="radius"/>
+         <button ng-click="findArea()">Find Area</button>
+        <br/>
         Result - {{message}}<br/>
         Operation Id - {{operation_id}}
     </div>
