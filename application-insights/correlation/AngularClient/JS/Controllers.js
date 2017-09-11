@@ -9,6 +9,13 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
             return v.toString(16);
         });
     }
+    $scope.testHeaders = function () {
+        //alert("test headers");
+        RESTClientService.EchoHeaders()
+        .then(function (data) {
+            alert(JSON.stringify( data, null, ' '));
+        });
+    }
     $scope.findArea = function () {
         $scope.operation_id = createGuid();
         window.appInsights.context.operation.id = $scope.operation_id;

@@ -13,5 +13,13 @@ namespace AngularClient.Controllers
         {
             return View();
         }
+        public ActionResult EchoHeaders()
+        {
+            return new JsonResult()
+            {
+                Data = Request.Headers.AllKeys.Select((key) => $"{key}"),
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
     }
 }
