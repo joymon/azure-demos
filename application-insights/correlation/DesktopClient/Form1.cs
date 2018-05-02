@@ -35,7 +35,7 @@ namespace DesktopClient
             var logger = new AppInsightLogger();
             string opId = Guid.NewGuid().ToString();
             IOperationHolder<RequestTelemetry> opHolder = new AppInsightLogger().StartOperation("Find Area normal", opId);
-            opHolder.Telemetry.Context.Com
+            
             Log("DoWorkWithCorrelatedAppInsight - Entered", opId);
             double raidus = await GetRadiusFromUI();
             Log("DoWorkWithCorrelatedAppInsight Converted Radius is - ", opId);
