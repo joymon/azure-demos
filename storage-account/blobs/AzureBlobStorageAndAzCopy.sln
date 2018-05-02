@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzCopyWindowsFormsApplication", "WindowsFormsApplication1\AzCopyWindowsFormsApplication.csproj", "{20EFDCE7-FAAF-48EC-8811-5B068B5AE4D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20EFDCE7-FAAF-48EC-8811-5B068B5AE4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20EFDCE7-FAAF-48EC-8811-5B068B5AE4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20EFDCE7-FAAF-48EC-8811-5B068B5AE4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20EFDCE7-FAAF-48EC-8811-5B068B5AE4D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://tfs2015:8080/tfs/kpmg-services
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = WindowsFormsApplication1\\AzCopyWindowsFormsApplication.csproj
+		SccProjectName1 = WindowsFormsApplication1
+		SccLocalPath1 = WindowsFormsApplication1
+	EndGlobalSection
+EndGlobal
