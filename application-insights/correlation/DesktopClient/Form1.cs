@@ -7,7 +7,9 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,10 +35,11 @@ namespace DesktopClient
             var logger = new AppInsightLogger();
             string opId = Guid.NewGuid().ToString();
             IOperationHolder<RequestTelemetry> opHolder = new AppInsightLogger().StartOperation("Find Area normal", opId);
+            opHolder.Telemetry.Context.Com
             Log("DoWorkWithCorrelatedAppInsight - Entered", opId);
             double raidus = await GetRadiusFromUI();
             Log("DoWorkWithCorrelatedAppInsight Converted Radius is - ", opId);
-            double area = await GetAreaTask(raidus,opId,opHolder.Telemetry.Id);
+            double area = await GetAreaTask(raidus, opId, opHolder.Telemetry.Id);
             Log($"DoWorkWithCorrelatedAppInsight Area is - {area}", opId);
             new AppInsightLogger().StopOperation(opHolder);
         }
@@ -64,13 +67,12 @@ namespace DesktopClient
         /// </summary>
         /// <param name="radius"></param>
         /// <returns></returns>
-        private Task<double> GetAreaTask(double radius,string opId,string parentOpId)
+        private Task<double> GetAreaTask(double radius, string opId, string parentOpId)
         {
             return Task.Run<double>(() =>
             {
                 var appInsight = new AppInsightLogger();
-                IOperationHolder<DependencyTelemetry> dep = appInsight.StartOperation<DependencyTelemetry>("GetAreaTask", opId,parentOpId);
-                
+                IOperationHolder<DependencyTelemetry> dep = appInsight.StartOperation<DependencyTelemetry>("GetAreaTask", opId, parentOpId);
                 double area = radius * radius * 3.14;
                 int delay = new Random().Next() % 8000;
                 Log($"Inside GetAreaTask - Going to Delay-{delay}");
@@ -102,9 +104,33 @@ namespace DesktopClient
             new AppInsightLogger().TrackEvent(msgToLog);
         }
 
-        private void FindAreaViaWebServiceButton_Click(object sender, EventArgs e)
+        #region WebService
+        private async void FindAreaViaWebServiceButton_Click(object sender, EventArgs e)
         {
+            string opId = Guid.NewGuid().ToString();
+            var opHolder = new AppInsightLogger().StartOperation<RequestTelemetry>("Find Area Via WebService", opId);
+            
+            Log("FindAreaViaWebServiceButton_Click - Entered", opId);
 
+            double area = await GetAreaFromReSTAPI(await GetRadiusFromUI(),opId);
+
+            Log($"FindAreaViaWebServiceButton_Click - Area is - {area}", opId);
+            new AppInsightLogger().StopOperation(opHolder);
+        }
+
+        private Task<double> GetAreaFromReSTAPI(double radius, string operation_id)
+        {
+            return Task.Run<double>(() =>
+            {
+                var url = $"http://localhost/FrontEndWCFService/FrontEndService.svc/areaOf/{radius}";
+                var wc = new WebClient();
+                wc.Headers.Add("Request-Id", operation_id);
+                string value = wc.DownloadString(url);
+                value = Regex.Matches(value, @"\d+").OfType<Match>().Select(m=>m.Value).LastOrDefault();
+                Log($"GetAreaFromReSTAPI - Value from web service - {value}");
+                return Convert.ToDouble(value);
+            });
         }
     }
+    #endregion
 }
