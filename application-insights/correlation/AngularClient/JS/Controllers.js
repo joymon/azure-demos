@@ -9,6 +9,7 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
             return v.toString(16);
         });
     }
+    $scope.apiOption = 'WCF';
     $scope.testHeaders = function () {
         //alert("test headers");
         RESTClientService.EchoHeaders()
@@ -19,15 +20,22 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
     $scope.findArea = function () {
         $scope.operation_id = createGuid();
         window.appInsights.context.operation.id = $scope.operation_id;
-        window.appInsights.trackEvent("Custom event from JS before service call", { operation_Id: $scope.operation_id });
-
-        var promiseGet = RESTClientService.get($scope.radius, $scope.operation_id);
-        promiseGet.then(function (pl) {
-            $scope.message = pl.data;
-        },
-                  function (errorPl) {
-                      $log.error('failure loading Company', errorPl);
-                  });
+        window.appInsights.trackEvent("Custom event from JS before service call to find area of " + $scope.radius, { operation_Id: $scope.operation_id });
+        if ($scope.apiOption === 'WCF') {
+            var promiseGet = RESTClientService.get($scope.radius, $scope.operation_id);
+        }
+        else {
+            var promiseGet = RESTClientService.getCircle($scope.radius, $scope.operation_id);
+        }
+        promiseGet.then(
+            function (pl) {
+                $scope.message = pl.data;
+            },
+            function (errorPl) {
+                $log.error('Error occured', errorPl);
+                alert('Error occured', errorPl);
+            }
+        );
     }
 
     $scope.firstAI = function () {

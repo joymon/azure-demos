@@ -7,11 +7,23 @@
         return $http.get(url, {
             headers: {
                 'Request-Id': guid,
-                //'x-ms-request-id':guid,
+                'x-ms-request-id': guid,
+                'x-ms-request-root-id': operation_id
             }
         }
         );
     };
+    this.getCircle = function (radius, operation_id) {
+        var url = 'http://localhost/FrontEndWebAPI/api/shapes/circle/' + radius;
+        return $http.get(url, {
+            headers: {
+                'Request-Id': operation_id,
+                'x-ms-request-id': operation_id,
+                'x-ms-request-root-id': operation_id
+            }
+        }
+        );
+    }
     this.EchoHeaders = function () {
         var url = "AngularClient/MVCWCFClient/EchoHeaders";
         var guid = "operation_id";
@@ -19,7 +31,7 @@
         return $http.get(url, {
             headers: {
                 'Request-Id': guid,
-                'joys-header':'joys header value',
+                'joys-header': 'joys header value',
             }
         }
         );
