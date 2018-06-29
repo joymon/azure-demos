@@ -8,3 +8,5 @@
 *.user
 *.suo
 /application-insights/correlation/.vs/correlation/v15/Server/sqlite3
+*.sqlite
+.vs/VSWorkspaceState.json
