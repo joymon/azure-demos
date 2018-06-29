@@ -9,6 +9,4 @@
 *.suo
 /application-insights/correlation/.vs/correlation/v15/Server/sqlite3
 *.sqlite
-/.vs/VSWorkspaceState.json
-/.vs/ProjectSettings.json
-*.ide
+.vs/VSWorkspaceState.json
