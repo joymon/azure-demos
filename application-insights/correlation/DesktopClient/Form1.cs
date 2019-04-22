@@ -135,7 +135,7 @@ namespace DesktopClient
         private void FlushAIAndClosebutton_Click(object sender, EventArgs e)
         {
             new AppInsightLogger().Flush();
-
+            Application.Exit();
         }
     }
     #endregion

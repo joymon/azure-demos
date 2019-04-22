@@ -10,13 +10,19 @@ using System.Web.SessionState;
 
 namespace InternalService
 {
-    public class Global : System.Web.HttpApplication
+    internal class TelemetryAdder
     {
-
-        protected void Application_Start(object sender, EventArgs e)
+        internal static void AddToActive()
         {
             string roleName = ConfigurationManager.AppSettings["ai.roleName"];
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
+        }
+    }
+    public class Global : System.Web.HttpApplication
+    {
+        protected void Application_Start(object sender, EventArgs e)
+        {
+            TelemetryAdder.AddToActive();
         }
 
         protected void Session_Start(object sender, EventArgs e)

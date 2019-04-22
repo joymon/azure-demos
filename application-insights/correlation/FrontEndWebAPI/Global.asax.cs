@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.Extensibility;
+using Shared;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -17,6 +20,8 @@ namespace FrontEndWebAPI
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            string roleName = ConfigurationManager.AppSettings["ai.roleName"];
+            TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
         }
     }
 }

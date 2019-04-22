@@ -21,10 +21,10 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
         window.appInsights.context.operation.id = $scope.operation_id;
         window.appInsights.trackEvent("Custom event from JS before service call to find area of " + $scope.radius, { operation_Id: $scope.operation_id });
         if ($scope.apiOption === 'WCF') {
-            var promiseGet = RESTClientService.get($scope.radius, $scope.operation_id);
+            promiseGet = RESTClientService.get($scope.radius, $scope.operation_id);
         }
         else {
-            var promiseGet = RESTClientService.getCircle($scope.radius, $scope.operation_id);
+            promiseGet = RESTClientService.getCircle($scope.radius, $scope.operation_id);
         }
         promiseGet.then(
             function (pl) {
