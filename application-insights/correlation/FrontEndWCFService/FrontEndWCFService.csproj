@@ -23,6 +23,7 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <ApplicationInsightsResourceId>/subscriptions/fb28b745-45f7-4089-824e-7dfcf5bae572/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/FrontEndWCFService</ApplicationInsightsResourceId>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FrontEndService.svc" />
+    <Content Include="Global.asax" />
     <Content Include="packages.config" />
     <None Include="Service References\InternalServiceReference\configuration91.svcinfo" />
     <None Include="Service References\InternalServiceReference\configuration.svcinfo" />
@@ -111,6 +113,9 @@
   <ItemGroup>
     <Compile Include="FrontEndService.svc.cs">
       <DependentUpon>FrontEndService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IFrontEndService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -147,6 +152,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\InternalServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{095302d9-8c77-4247-85b0-ec0014489b98}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

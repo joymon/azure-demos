@@ -34,6 +34,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.LogstextBox = new System.Windows.Forms.TextBox();
             this.FindAreaViaWebServiceButton = new System.Windows.Forms.Button();
+            this.FlushAIAndClosebutton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,11 +94,22 @@
             this.FindAreaViaWebServiceButton.UseVisualStyleBackColor = true;
             this.FindAreaViaWebServiceButton.Click += new System.EventHandler(this.FindAreaViaWebServiceButton_Click);
             // 
+            // FlushAIAndClosebutton
+            // 
+            this.FlushAIAndClosebutton.Location = new System.Drawing.Point(615, 83);
+            this.FlushAIAndClosebutton.Name = "FlushAIAndClosebutton";
+            this.FlushAIAndClosebutton.Size = new System.Drawing.Size(179, 20);
+            this.FlushAIAndClosebutton.TabIndex = 5;
+            this.FlushAIAndClosebutton.Text = "Flush AppInsight and close";
+            this.FlushAIAndClosebutton.UseVisualStyleBackColor = true;
+            this.FlushAIAndClosebutton.Click += new System.EventHandler(this.FlushAIAndClosebutton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.FlushAIAndClosebutton);
             this.Controls.Add(this.FindAreaViaWebServiceButton);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.RadiustextBox);
@@ -121,6 +133,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox LogstextBox;
         private System.Windows.Forms.Button FindAreaViaWebServiceButton;
+        private System.Windows.Forms.Button FlushAIAndClosebutton;
     }
 }
 

@@ -25,9 +25,9 @@ namespace InternalService
         public double GetValueOfPi()
         {
             TelemetryClient client = new TelemetryClient(TelemetryConfiguration.Active);
-            IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from Internal service");
+            //IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from Internal service");
             client.TrackEvent("Custom event from Internal service");
-            client.StopOperation<DependencyTelemetry>(holder);
+            //client.StopOperation<DependencyTelemetry>(holder);
             return 3.14d;
         }
     }

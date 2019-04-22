@@ -10,11 +10,10 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
         });
     }
     $scope.testHeaders = function () {
-        //alert("test headers");
         RESTClientService.EchoHeaders()
-        .then(function (data) {
-            alert(JSON.stringify( data, null, ' '));
-        });
+            .then(function (data) {
+                alert(JSON.stringify(data, null, ' '));
+            });
     }
     $scope.findArea = function () {
         $scope.operation_id = createGuid();
@@ -25,23 +24,23 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
         promiseGet.then(function (pl) {
             $scope.message = pl.data;
         },
-                  function (errorPl) {
-                      $log.error('failure loading Company', errorPl);
-                  });
-    }
+            function (errorPl) {
+                $log.error('failure loading Company', errorPl);
+            });
+    };
 
     $scope.firstAI = function () {
         $scope.operation_id = createGuid();
         window.appInsights.queue.push(function () {
             window.appInsights.context.addTelemetryInitializer(function (envelope) {
                 envelope.tags["ai.operation.id"] = $scope.operation_id;
-                envelope.tags["ai.operation.name"] = "my-client-custom-init-op";
+                envelope.tags["ai.operation.name"] = "my-webclient-custom-init-op";
+                envelope.tags["ai.cloud.role"] = "AngularClient";
                 console.log("'ai.operation.id' init " + $scope.operation_id);
             });
         });
         window.appInsights.trackEvent("Custom init event from JS", { operation_Id: $scope.operation_id });
-
-    }
+    };
     $scope.firstAI();
 }]);
 

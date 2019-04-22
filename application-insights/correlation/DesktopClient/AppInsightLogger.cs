@@ -49,5 +49,10 @@ namespace DesktopClient
         {
             return new TelemetryClient(TelemetryConfiguration.Active);
         }
+
+        internal void Flush()
+        {
+            GetTelemetryClient().Flush();
+        }
     }
 }

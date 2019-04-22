@@ -3,6 +3,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -19,11 +20,11 @@ namespace FrontEndWCFService
         public string GetAreaOfCircle(string value)
         {
             TelemetryClient client = GetTelemetryClient();
-            IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from FrontEndWCFService");
-            holder.Telemetry.Type = "Custom";
+            //IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from FrontEndWCFService");
+            //holder.Telemetry.Type = "Custom";
             double radius = Convert.ToDouble(value);
             double pi = GetValueOfPi().Result;
-            client.StopOperation<DependencyTelemetry>(holder);
+            //client.StopOperation<DependencyTelemetry>(holder);
             return string.Format("Area of circle with {0} raidus is {1}", value, pi * radius * radius);
         }
 
@@ -36,8 +37,9 @@ namespace FrontEndWCFService
         {
             InternalServiceReference.InternalServiceClient serviceClient = new InternalServiceReference.InternalServiceClient();
             double pi;
-            bool shouldGetPiFromService = random.Next() % 2 == 0;
-            shouldGetPiFromService = false; // Hack if the netPipeService is not working.
+            bool shouldGetValueFromServiceConfig = Convert.ToBoolean(ConfigurationManager.AppSettings["ShouldGetPiFromService"]);
+            bool shouldGetPiFromService = shouldGetValueFromServiceConfig | random.Next() % 2 == 0;
+            //shouldGetPiFromService = false; // Hack if the netPipeService is not working.
             if (shouldGetPiFromService) {
                 pi = await serviceClient.GetValueOfPiAsync();
                 //This public URL will also give the valyue. https://api.pi.delivery/v1/pi?start=0&numberOfDigits=10
