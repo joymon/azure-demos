@@ -12,3 +12,4 @@
 .vs/VSWorkspaceState.json
 *.ide
 .vs/ProjectSettings.json
+/storage-account/blobs/WindowsFormsClient/.vs/
