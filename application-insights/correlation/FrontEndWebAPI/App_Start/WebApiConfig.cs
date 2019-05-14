@@ -19,6 +19,7 @@ namespace FrontEndWebAPI
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            GlobalConfiguration.Configuration.Filters.Add(new AddCustomHeaderFilter());
         }
     }
 }

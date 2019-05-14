@@ -13,18 +13,19 @@ using System.Web.Http;
 namespace FrontEndWebAPI.Controllers
 {
     [RoutePrefix("api/shapes")]
+    
     public class ShapesController : ApiController
     {
-
+       
         [Route("circle/{radius}")]
         async public Task<double> GetRadius(int radius)
         {
             TelemetryClient client = TelemetryFactory.GetTelemetryClient();
 
-            IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from FrontEndWebAPI");
+            //IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from FrontEndWebAPI");
             client.TrackEvent("Custom event from FrontEndWebAPI");
             double pi = await new PiValueProvider().Get();
-            client.StopOperation<DependencyTelemetry>(holder);
+            //client.StopOperation<DependencyTelemetry>(holder);
             return radius * radius * pi;
         }
     }
