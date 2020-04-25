@@ -1,4 +1,14 @@
-﻿function New-AzVMIfNotExists{
+﻿####################### Params start ##########################3
+#Connect-AzAccount
+$RGName = 'to-delete-vnet-peering'
+$primaryVNetName = "primaryNetwork"
+$secondaryVNetName = "secondaryNetwork"
+$imageName = "UbuntuLTS"
+
+$cred = Get-Credential -Message "Enter a username and password for the virtual machine." -UserName 'testadmin'
+#################### Params End ###########
+################## Functions start ###########
+function New-AzVMIfNotExists{
     param($name,$vmparams)
     $VM = Get-azvm -name $name
     if ($VM) {
@@ -11,10 +21,7 @@
     }
     return $VM
 }
-#Connect-AzAccount
-$RGName = 'to-delete-vnet-peering'
-$imageName = "Win2016Datacenter"
-$imageName = "UbuntuLTS"
+################## Functions End ###########
 $RG = Get-AzResourceGroup -Name $RGName
 if ($RG) {
     "Resource group exists"
@@ -22,7 +29,7 @@ if ($RG) {
 else {
     $RG = New-AzResourceGroup -Name $RGName -Location eastus -Force
 }
-$cred = Get-Credential -Message "Enter a username and password for the virtual machine." -UserName 'testadmin'
+################# Create VMs ##############
 $primaryVMParams = @{
     ResourceGRoupName   = $RGName
     Name                = 'PrimaryVM'
@@ -44,7 +51,6 @@ $secondaryVMParams = @{
     Name                = 'SecondaryVM'
     Location            = "EastUS"
     ImageName           = $imageName
-    PublicIpAddressName = 'secondaryVMPublicIp'
     Credential          = $cred
     OpenPorts           = 3389, 22
     Size                = "Standard_A1_v2"
@@ -55,3 +61,14 @@ $secondaryVMParams = @{
 }
 $secondaryVM=New-AzVMIfNotExists -name 'SecondaryVM' -vmparams $secondaryVMParams
 $secondaryVM
+################## VNet Peering #########################3
+$primaryVNet = Get-AzVirtualNetwork -Name $primaryVNetName
+$secondaryVNet = Get-AzVirtualNetwork -Name $secondaryVNetName
+$peeringPrimary2Secondary= Get-AzVirtualNetworkPeering -ResourceGroupName $RGName -VirtualNetworkName $primaryVNetName
+if($peeringPrimary2Secondary) {
+    "Peering exists"
+}
+else {
+    "Adding primary to secondary"
+    $peeringPrimary2Secondary = Add-AzVirtualNetworkPeering -Name 'primary2secondary' -VirtualNetwork $primaryVNet -RemoteVirtualNetworkId $secondaryVNet.Id
+}
