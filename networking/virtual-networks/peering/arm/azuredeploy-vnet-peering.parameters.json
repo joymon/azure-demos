@@ -4,10 +4,10 @@
     "parameters": {
         "vNet1Name":
         {
-            "value": "vNet1peeringtest"
+            "value": "primaryNetwork"
         },
         "vNet2Name": {
-            "value": "vNet2peeringtest"
+            "value": "secondaryNetwork"
         }
     }
 }

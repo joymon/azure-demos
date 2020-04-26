@@ -25,13 +25,6 @@
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
             }
         },
-        "dnsLabelPrefix": {
-            "type": "string",
-            "defaultValue": "[toLower(concat('peering-', uniqueString(resourceGroup().id)))]",
-            "metadata": {
-                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
-            }
-        },
         "ubuntuOSVersion": {
             "type": "string",
             "defaultValue": "18.04-LTS",
@@ -45,14 +38,6 @@
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
-        
-        "VmSize": {
-            "type": "string",
-            "defaultValue": "Standard_B2s",
-            "metadata": {
-                "description": "The size of the VM"
-            }
-        },
         "networkSecurityGroupName": {
             "type": "string",
             "defaultValue": "primaryVMNSG",
@@ -63,6 +48,8 @@
     },
     "variables": {
         "location": "[resourceGroup().location]",
+        "VmSize": "Standard_B1ls",
+        "dnsLabelPrefix": "[toLower(concat('vm-', uniqueString(resourceGroup().id)))]",
         "publicIpAddressName": "[concat('PrimaryVM', 'PublicIP' )]",
         "networkInterfaceName": "[concat('PrimaryVM','NetInt')]",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'primaryNetwork', 'primarySubnet')]",
@@ -113,7 +100,7 @@
                 "publicIpAllocationMethod": "Dynamic",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+                    "domainNameLabel": "[variables('dnsLabelPrefix')]"
                 },
                 "idleTimeoutInMinutes": 4
             },
@@ -175,8 +162,8 @@
                 }
             }
         },
-        
-        
+
+
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-03-01",
@@ -187,7 +174,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('VmSize')]"
+                    "vmSize": "[variables('VmSize')]"
                 },
                 "storageProfile": {
                     "osDisk": {
@@ -300,7 +287,7 @@
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('VmSize')]"
+                    "vmSize": "[variables('VmSize')]"
                 },
                 "storageProfile": {
                     "osDisk": {

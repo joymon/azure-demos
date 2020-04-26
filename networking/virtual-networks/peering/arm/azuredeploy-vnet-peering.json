@@ -19,14 +19,14 @@
     },
     "variables": {
         "vNet1": {
-            "addressSpacePrefix": "10.0.0.0/24",
-            "subnetName": "subnet1",
-            "subnetPrefix": "10.0.0.0/24"
+            "addressSpacePrefix": "192.168.0.0/24",
+            "subnetName": "primarySubnet",
+            "subnetPrefix": "192.168.0.0/28"
         },
         "vNet2": {
-            "addressSpacePrefix": "192.168.0.0/24",
-            "subnetName": "subnet1",
-            "subnetPrefix": "192.168.0.0/24"
+            "addressSpacePrefix": "192.168.1.0/24",
+            "subnetName": "secondarySubnet",
+            "subnetPrefix": "192.168.1.0/28"
         },
         "vNet1tovNet2PeeringName": "[concat(parameters('vNet1Name'), '-', parameters('vNet2Name'))]",
         "vNet2tovNet1PeeringName": "[concat(parameters('vNet2Name'), '-', parameters('vNet1Name'))]"
