@@ -1,6 +1,9 @@
 ﻿
 app.service("RESTClientService", function ($http) {
-    let baseURL = "https://localhost/"
+    this.baseURL = "https://localhost/"
+    this.getBaseUrl = function () {
+        return this.baseURL;
+    }
     this.get = function (radius, operation_id) {
         var url = baseURL + "FrontEndWCFService/FrontEndService.svc/areaOf/" + radius;
         var guid = operation_id;

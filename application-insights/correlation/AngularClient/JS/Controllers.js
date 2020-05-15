@@ -10,6 +10,7 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
         });
     }
     $scope.apiOption = 'WCF';
+    $scope.baseUrl = RESTClientService.getBaseUrl();
     $scope.testHeaders = function () {
         RESTClientService.EchoHeaders()
             .then(function (data) {
