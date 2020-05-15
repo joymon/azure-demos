@@ -15,15 +15,12 @@ namespace FrontEndWCFService
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            string roleName = ConfigurationManager.AppSettings["ai.roleName"];
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
         }
 
         protected void Session_Start(object sender, EventArgs e)
         {
 
         }
-
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
 

@@ -19,8 +19,8 @@ namespace FrontEndWebAPI
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            string roleName = ConfigurationManager.AppSettings["ai.roleName"];
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
+            //string roleName = ConfigurationManager.AppSettings["ai.roleName"];
+            //TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
         }
     }
 }

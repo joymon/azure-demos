@@ -158,6 +158,7 @@
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{095302d9-8c77-4247-85b0-ec0014489b98}</Project>
       <Name>Shared</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

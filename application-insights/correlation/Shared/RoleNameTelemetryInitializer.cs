@@ -10,21 +10,25 @@ namespace Shared
 {
     public class RoleNameTelemetryInitializer : ITelemetryInitializer
     {
-        string _roleName;
+        public string RoleName { get; set; }
+        public RoleNameTelemetryInitializer()
+        {
+
+        }
         public RoleNameTelemetryInitializer(string roleName)
         {
-            if (string.IsNullOrWhiteSpace(_roleName))
+            if ( string.IsNullOrWhiteSpace(this.RoleName) && string.IsNullOrWhiteSpace(roleName))
             {
                 Console.WriteLine($"{nameof(roleName)} is empty. So cloud_RoleName may not be set.");
             }
-            _roleName = roleName;
+            this.RoleName = roleName;
         }
         public void Initialize(ITelemetry telemetry)
         {
             if (string.IsNullOrWhiteSpace(telemetry.Context.Cloud.RoleName))
             {
                     //set custom role name here
-                    telemetry.Context.Cloud.RoleName = this._roleName;
+                    telemetry.Context.Cloud.RoleName = this.RoleName;
             }
         }
     }

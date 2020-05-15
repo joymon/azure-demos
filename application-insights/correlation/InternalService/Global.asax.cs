@@ -14,8 +14,6 @@ namespace InternalService
     {
         internal static void AddToActive()
         {
-            string roleName = ConfigurationManager.AppSettings["ai.roleName"];
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new RoleNameTelemetryInitializer(roleName));
         }
     }
     public class Global : System.Web.HttpApplication

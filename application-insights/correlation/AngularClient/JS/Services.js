@@ -1,7 +1,8 @@
-﻿app.service("RESTClientService", function ($http) {
-
+﻿
+app.service("RESTClientService", function ($http) {
+    let baseURL = "https://localhost/"
     this.get = function (radius, operation_id) {
-        var url = "http://localhost/FrontEndWCFService/FrontEndService.svc/areaOf/" + radius;
+        var url = baseURL + "FrontEndWCFService/FrontEndService.svc/areaOf/" + radius;
         var guid = operation_id;
         //The RequestId header passed from here is taken as operation id at webhttp WCF side to correlate.
         return $http.get(url, {
@@ -14,7 +15,7 @@
         );
     };
     this.getCircle = function (radius, operation_id) {
-        var url = 'http://localhost/FrontEndWebAPI/api/shapes/circle/' + radius;
+        var url = baseURL + 'FrontEndWebAPI/api/shapes/circle/' + radius;
         return $http.get(url, {
             headers: {
                 'Request-Id': operation_id,

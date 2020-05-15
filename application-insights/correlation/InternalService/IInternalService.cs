@@ -12,7 +12,6 @@ namespace InternalService
     [ServiceContract]
     public interface IInternalService
     {
-
         [OperationContract]
         string GetData(int value);
 
