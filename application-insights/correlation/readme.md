@@ -9,5 +9,8 @@ Details are available at
   - Make sure the InternalService hosted with net.pipe binding enabled
   - Replace {YOURKEY} with actual application insight instrumentation key
   - Replace this.baseURL variable in service.js has the base path. It has to end with /
+  - If the hosting is via http instead of https make sure to change the below tag in the web.config of FrontEndWCFService
+    - From `<security mode="Transport">`
+    - To `<security mode="None">`
 
 
