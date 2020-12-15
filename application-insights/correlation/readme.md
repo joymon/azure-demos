@@ -13,5 +13,5 @@ Details are available at
   - If the hosting is via http instead of https make sure to change the below tag in the web.config of FrontEndWCFService
     - From `<security mode="Transport">`
     - To `<security mode="None">`
-
-
+- Network considerations
+  - Make sure the machine that sending AppInsights telemtry has connectivity to the AppInsights end point. List of ports and IPs available [here](https://docs.microsoft.com/en-us/azure/azure-monitor/app/ip-addresses#outgoing-ports).
