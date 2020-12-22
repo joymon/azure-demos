@@ -101,7 +101,7 @@ namespace DesktopClient
         {
             string msgToLog = $"Thread Id-{Thread.CurrentThread.ManagedThreadId},OpId - {opId}, Message - {message}";
             Trace.WriteLine(msgToLog);
-            new AppInsightLogger().TrackEvent(msgToLog);
+            new AppInsightLogger().TrackTrace(msgToLog);
         }
 
         #region WebService

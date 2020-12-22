@@ -28,7 +28,7 @@ namespace InternalService
         {
             TelemetryClient client = new TelemetryClient(TelemetryConfiguration.Active);
             //IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from Internal service");
-            client.TrackEvent("Custom event from Internal service");
+            client.TrackTrace("Custom trace from Internal service");
             //client.StopOperation<DependencyTelemetry>(holder);
             return 3.14d;
         }

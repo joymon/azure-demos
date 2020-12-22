@@ -40,7 +40,10 @@ namespace DesktopClient
             holder.Telemetry.Type = "Custom";
             client.StopOperation<DependencyTelemetry>(holder);
         }
-
+        internal void TrackTrace(string message)
+        {
+            GetTelemetryClient().TrackTrace(message);
+        }
         internal void TrackEvent(string message)
         {
             GetTelemetryClient().TrackEvent(message);

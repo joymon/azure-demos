@@ -1,6 +1,6 @@
 ﻿
 app.service("RESTClientService", function ($http) {
-    this.baseURL = "https://localhost/"
+    this.baseURL = "http://localhost/"
     this.getBaseUrl = function () {
         return this.baseURL;
     }

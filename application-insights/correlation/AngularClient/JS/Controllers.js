@@ -20,7 +20,7 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
     $scope.findArea = function () {
         $scope.operation_id = createGuid();
         window.appInsights.context.operation.id = $scope.operation_id;
-        window.appInsights.trackEvent("Custom event from JS before service call to find area of " + $scope.radius, { operation_Id: $scope.operation_id });
+        window.appInsights.trackTrace("Custom event from JS before service call to find area of " + $scope.radius, { operation_Id: $scope.operation_id });
         if ($scope.apiOption === 'WCF') {
             promiseGet = RESTClientService.get($scope.radius, $scope.operation_id);
         }
@@ -48,7 +48,7 @@ app.controller("RESTClientController", ['$scope', '$log', 'RESTClientService', f
                 console.log("'ai.operation.id' init " + $scope.operation_id);
             });
         });
-        window.appInsights.trackEvent("Custom init event from JS", { operation_Id: $scope.operation_id });
+        window.appInsights.trackTrace("Custom init event from JS", { operation_Id: $scope.operation_id });
     };
     $scope.firstAI();
 }]);

@@ -20,6 +20,7 @@ namespace FrontEndWCFService
         public string GetAreaOfCircle(string value)
         {
             TelemetryClient client = GetTelemetryClient();
+
             //IOperationHolder<DependencyTelemetry> holder = client.StartOperation<DependencyTelemetry>("Custom operation from FrontEndWCFService");
             //holder.Telemetry.Type = "Custom";
             double radius = Convert.ToDouble(value);
@@ -50,7 +51,10 @@ namespace FrontEndWCFService
             }
             
             await Task.Delay(1000);
-            GetTelemetryClient().TrackEvent($"FrontEndService.GetValueOfPi() = {pi}");
+            EventTelemetry et = new EventTelemetry();
+            et.Name = "FrontEndService.GetValueOfPi()";
+            et.Properties.Add("message", $"value of pi obtained= {pi}");
+            GetTelemetryClient().TrackTrace($"{nameof(GetValueOfPi)}Value of pi obtained= {pi}");
             
             return pi;
         }
