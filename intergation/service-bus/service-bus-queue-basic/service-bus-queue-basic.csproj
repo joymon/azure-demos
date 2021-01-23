@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net462</TargetFramework>
+    <RootNamespace>service_bus_queue_basic</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.0.1" />
+    <PackageReference Include="CSharp.Console.Menu" Version="1.0.5" />
+    <PackageReference Include="EasyConsole" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.1.1" />
+    <PackageReference Include="WindowsAzure.ServiceBus" Version="6.0.3" />
+  </ItemGroup>
+
+</Project>
