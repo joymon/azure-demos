@@ -34,7 +34,8 @@ namespace service_bus_queue_basic
         private static async Task DeQueueMessages()
         {
             Console.WriteLine("Dequue");
-            await WindowsAzureServiceBusDeQueuer.DeQueueAll();
+            //await WindowsAzureServiceBusDeQueuer.DeQueueAll();
+            await AzureMessagingServiceBusDequeuer.DeQueueAll();
         }
 
         static void QueueMessages()
