@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace service_bus_queue_basic
 {
-    internal class AzureMessagingServiceBusDequeuer
+    public class AzureMessagingServiceBusDequeuer : IServiceBusDequeuer
     {
-        internal static async Task DeQueueAll()
+        public async Task DeQueueAll()
         {
             var client = new ServiceBusClient(Configurations.SBConnectionString);
             var opts = new ServiceBusReceiverOptions
