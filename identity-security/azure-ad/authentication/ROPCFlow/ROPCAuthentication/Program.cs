@@ -1,5 +1,6 @@
 ﻿using EasyConsole;
 using Microsoft.Graph;
+using PnP.Framework;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,84 +16,71 @@ namespace ROPCAuthentication
         public static async Task Main(string[] args)
         {
             var easyConsoleMenu = new Menu()
-                .Add("List Root Site (just to check authentication)", async (token) => await ListRootSite())
-                .Add("List sites x2 (confirm JWT token caching)", async (token) => await ListSites2Times())
-                .Add("Download file", async (token) => await GetFileForDownload())
-                .Add("Exit", async (token) => Console.WriteLine("Exiting"));
-            
+                .Add("GraphAPI - List Root Site (just to check authentication)", async (token) => await ListRootSiteUsingGraphAPI())
+                .Add("GraphAPI - List sites x2 (confirm JWT token caching)", async (token) => await ListSites2Times())
+                .Add("GraphAPI - Download file", async (token) => await DownloadFileUsingGraphAPI())
+                .Add("PnPFramework - List Root Site (just to check authentication)", async (token) => await ListRootSiteUsingPnPFramework())
+                .Add("PnPFramework - Download file", async (token) => await DownloadFileUsingPnPFramework())
+
+                .Add("Exit", async (token) => await Task.Delay(0));
+
             await easyConsoleMenu.Display(CancellationToken.None);
-            
+
             Input.ReadString("Completed...");
         }
-        private static async Task ListRootSite()
+
+        #region PnP Library
+        private async static Task ListRootSiteUsingPnPFramework()
         {
-            string accessToken = await GetAccessToken();
-            GraphServiceClient graphClient = GetGraphServiceClient(accessToken);
-
-            var site = await GraphHelper.GetRootSite(graphClient);
-            Output.WriteLine(ConsoleColor.Green, $@"Root site information: 
-                                    Id:{site.Id},
-                                    Display Name:{site.DisplayName},
-                                    WebUrl:{site.WebUrl}");
+            await SharePointManagerFactory.Get(SharePointInteractionType.PnPFramework).ListRootSite();
         }
+        async private static Task DownloadFileUsingPnPFramework()
+        {
+            Spo spoObj = new Spo
+            {
+                siteId = Configurations.SiteId,
+                LibraryId = Configurations.LibraryId,
+                FileId = Configurations.FileId
+            };
+            await SharePointManagerFactory.Get(SharePointInteractionType.PnPFramework).DownloadFile(spoObj);
+        }
+        #endregion
 
+        #region Graph API
+        private static async Task ListRootSiteUsingGraphAPI()
+        {
+            await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).ListRootSite();
+        }
         async private static Task ListSites2Times()
         {
-            string accessToken = await GetAccessToken();
-            GraphServiceClient graphClient = GetGraphServiceClient(accessToken);
+            Console.WriteLine($"Attemp 1 - Start");
+            await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).ListRootSite();
+            Console.WriteLine($"Attemp 1 - End");
 
-            var site = await GraphHelper.GetRootSite(graphClient);
-            Console.WriteLine($"Attemp 1 = Root site information: Id:{site.Id},WebUrl:{site.WebUrl}");
-
-            string accessToken1 = await GetAccessToken();
-            GraphServiceClient graphClient1 = GetGraphServiceClient(accessToken1);
-
-            var site1 = await GraphHelper.GetRootSite(graphClient1);
-            Console.WriteLine($"Attemp 2 = Root site information: Id:{site1.Id},WebUrl:{site1.WebUrl}");
-        }
-        private static async Task<string> GetAccessToken()
-        {
-            string KeyVaultURI = string.Empty;
-            IAuthenticationManager authenticationManager = AuthenticationManagerFactory.Get();
-            return await authenticationManager.GetAccessTokenAsync(new Uri("https://graph.microsoft.com/"), KeyVaultURI);
+            Console.WriteLine($"Attemp 2 - Start");
+            await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).ListRootSite();
+            Console.WriteLine($"Attemp 2 ");
         }
 
-        private static async Task GetFileForDownload()
-        {
-            string accessToken = await GetAccessToken();
-            GraphServiceClient graphClient = GetGraphServiceClient(accessToken);
-
-            await GetFileforDownload(graphClient);
-        }
-
-        private static GraphServiceClient GetGraphServiceClient(string accessToken)
-        {
-            return new GraphServiceClient(new DelegateAuthenticationProvider((requestMessage) =>
-            {
-                requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-                return Task.FromResult(0);
-            }));
-        }
-
-        private static async Task GetFileforDownload(GraphServiceClient graphClient)
+        private static async Task DownloadFileUsingGraphAPI()
         {
             Console.WriteLine("Acquiring file Details ...");
             try
             {
                 Spo spoObj = new Spo
                 {
-                    siteId = ConfigurationManager.AppSettings["SiteId"],
-                    LibraryId = ConfigurationManager.AppSettings["LibraryId"],
-                    FileId = ConfigurationManager.AppSettings["FileId"]
+                    siteId = Configurations.SiteId,
+                    LibraryId = Configurations.LibraryId,
+                    FileId = Configurations.FileId
                 };
-                var file = await GraphHelper.GetFileAsync(spoObj, graphClient);
+                var file = await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).GetFileAsync(spoObj);
                 if (file == null)
                 {
                     return;
                 }
                 else
                 {
-                    await GraphHelper.DownloadFile(file);
+                    await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).DownloadFile(spoObj);
                 }
                 Console.WriteLine($"Found FileId {file.Id}");
                 Console.WriteLine($"Found File Name {file.Name}");
@@ -104,5 +92,6 @@ namespace ROPCAuthentication
                 Output.WriteLine(ConsoleColor.Red, ex.Message);
             }
         }
+        #endregion
     }
 }

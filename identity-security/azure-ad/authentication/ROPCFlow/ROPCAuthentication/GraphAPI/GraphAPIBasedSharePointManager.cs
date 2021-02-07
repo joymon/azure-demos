@@ -1,4 +1,5 @@
-﻿using Microsoft.Graph;
+﻿using EasyConsole;
+using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,33 +11,40 @@ using System.Threading.Tasks;
 
 namespace ROPCAuthentication
 {
-    public static class GraphHelper
+    public class GraphAPIBasedSharePointManager : ISharePointManager
     {
-        async internal static Task<Site> GetRootSite(GraphServiceClient graphClient)
+        #region ISharePointManager implementation
+        async Task ISharePointManager.ListRootSite()
         {
-            var request = graphClient.Sites.Root.Request();
-            return await request.GetAsync();
-        }
-        public static async Task<DriveItem> GetFileAsync(Spo spo, GraphServiceClient graphClient)
-        {
-            //This will be getting from the Response Message
-            var siteId = spo.siteId;  //This will be getting from the Response Message
-                                      //This will be getting from the Response Message
-            var docLibraryId = spo.LibraryId;
-            //This will be getting from the Response Message
-            var FileId = spo.FileId;
+            GraphServiceClient graphClient = await GetGraphServiceClient();
 
-            var file = await graphClient.Sites[siteId].Drives[docLibraryId].Items[FileId].Request().GetAsync();
+            var request = graphClient.Sites.Root.Request();
+            var site = await request.GetAsync();
+            Output.WriteLine(ConsoleColor.Green, $@"Root site information: 
+                                    Id:{site.Id},
+                                    Display Name:{site.DisplayName},
+                                    WebUrl:{site.WebUrl}");
+
+        }
+        async Task<DriveItem> ISharePointManager.GetFileAsync(Spo spo)
+        {
+            Output.WriteLine($"{nameof(GraphAPIBasedSharePointManager)}.{nameof(ISharePointManager.GetFileAsync)} - Start");
+            DriveItem file = await GetFileFromSpo(spo);
+            if (file == null)
+            {
+                Output.WriteLine($"File does not exists");
+            }
             return file;
         }
-
+       
         /// <summary>
-        /// 
+        /// Download file
         /// </summary>
-        /// <param name="file"></param>
+        /// <param name="spo"></param>
         /// <returns></returns>
-        public static async Task<DriveItem> DownloadFile(DriveItem file)
+        async Task ISharePointManager.DownloadFile(Spo spo)
         {
+            DriveItem file = await GetFileFromSpo(spo);
             const long DefaultChunkSize = 2000 * 1024; // 50 KB, TODO: change chunk size to make it realistic for a large file.
             long ChunkSize = DefaultChunkSize;
             long offset = 0;         // cursor location for updating the Range header.
@@ -93,13 +101,38 @@ namespace ROPCAuthentication
                         }
                         offset += ChunkSize + 1; // Move the offset cursor to the next chunk.
                     }
-
-
                 }
-
-
             }
+        }
+        #endregion
+        
+        private static async Task<DriveItem> GetFileFromSpo(Spo spo)
+        {
+            GraphServiceClient graphClient = await GetGraphServiceClient();
+            var siteId = spo.siteId;  //This will be getting from the Response Message
+            var docLibraryId = spo.LibraryId;
+            //This will be getting from the Response Message
+            var FileId = spo.FileId;
+            var site = await graphClient.Sites[siteId].Request().GetAsync();
+            var file = await graphClient.Sites[siteId].Drives[docLibraryId].Items[FileId].Request().GetAsync();
             return file;
         }
+
+        private static async Task<string> GetAccessToken()
+        {
+            string KeyVaultURI = string.Empty;
+            IAuthenticationManager authenticationManager = AuthenticationManagerFactory.Get();
+            return await authenticationManager.GetAccessTokenAsync(new Uri("https://graph.microsoft.com/"), KeyVaultURI);
+        }
+        async private static Task<GraphServiceClient> GetGraphServiceClient()
+        {
+            string accessToken = await GetAccessToken();
+            return new GraphServiceClient(new DelegateAuthenticationProvider((requestMessage) =>
+            {
+                requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                return Task.FromResult(0);
+            }));
+        }
+
     }
 }

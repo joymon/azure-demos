@@ -11,7 +11,10 @@ using System.Threading.Tasks;
 
 namespace ROPCAuthentication
 {
-    public class AuthenticationManager : IAuthenticationManager
+    /// <summary>
+    /// The primitive way to get AAD access token. Use the MSALBasedAuthenticationManager which abstract the complexity.
+    /// </summary>
+    public class AADAuthenticationManager : IAuthenticationManager
     {
         // Token cache handling
         private static readonly SemaphoreSlim semaphoreSlimTokens = new SemaphoreSlim(1);
@@ -92,20 +95,15 @@ namespace ROPCAuthentication
 
         public async Task<string> GetAccessTokenAsync(Uri resourceUri, string KeyVaultURI)
         {
-            string serviceAccountName = ConfigurationManager.AppSettings["serviceAccountName"];
-            string serviceAccountPasswordClearText = ConfigurationManager.AppSettings["serviceAccountPasswordClearText"];
-            string AADTenantId = ConfigurationManager.AppSettings["AADTenantId"];
-            string AADAppregistrationId = ConfigurationManager.AppSettings["AADAppregistrationId"];
-            SecureString tenantAdminPassword = CommonUtils.GetSecureString(serviceAccountPasswordClearText);
-
             string accessTokenFromCache = TokenFromCache(resourceUri, tokenCache);
             if (accessTokenFromCache == null)
             {
                 await semaphoreSlimTokens.WaitAsync().ConfigureAwait(false);
                 try
                 {
-
-                    Task<AuthenticationResult> taskTokenGenerate = GetAccessTokenForFederatedAccount(resourceUri.ToString(), serviceAccountName, tenantAdminPassword, AADTenantId, AADAppregistrationId);
+                    Task<AuthenticationResult> taskTokenGenerate = GetAccessTokenForFederatedAccount(resourceUri.ToString(), Configurations.ServiceAccountName,
+                       Configurations.ServiceAccountSecurePassword ,
+                       Configurations.AADTenantId, Configurations.AADAppregistrationId);
                     taskTokenGenerate.Wait();
                     var result = taskTokenGenerate.Result;
                     string accessToken = result.AccessToken;
@@ -133,7 +131,7 @@ namespace ROPCAuthentication
                                     // Take a lock to ensure no other threads are updating the SharePoint Access token at this time
                                     await semaphoreSlimTokens.WaitAsync().ConfigureAwait(false);
                                     RemoveTokenFromCache(resourceUri, tokenCache);
-                                    Console.WriteLine($"Cached token for resource {resourceUri.DnsSafeHost} and user {serviceAccountName} expired");
+                                    Console.WriteLine($"Cached token for resource {resourceUri.DnsSafeHost} and user {Configurations.ServiceAccountName} expired");
                                 }
                                 catch (Exception ex)
                                 {
@@ -172,8 +170,5 @@ namespace ROPCAuthentication
             var authResult = await authContext.AcquireTokenAsync(ResourceAppIdUri, AADAppregistrationId, cred);
             return authResult;
         }
-
-        
-
     }
 }

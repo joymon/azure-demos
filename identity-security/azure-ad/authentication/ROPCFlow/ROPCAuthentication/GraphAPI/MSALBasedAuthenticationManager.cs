@@ -13,8 +13,8 @@ namespace ROPCAuthentication
     {
         static Lazy<IPublicClientApplication> lazyApp = new Lazy<IPublicClientApplication>(() =>
         PublicClientApplicationBuilder
-                .Create(ConfigurationManager.AppSettings["AADAppregistrationId"])
-                .WithTenantId(ConfigurationManager.AppSettings["AADTenantId"])
+                .Create(Configurations.AADAppregistrationId)
+                .WithTenantId(Configurations.AADTenantId)
                 .Build());
 
         /// <summary>
@@ -27,24 +27,20 @@ namespace ROPCAuthentication
         /// </remarks>
         async Task<string> IAuthenticationManager.GetAccessTokenAsync(Uri resourceUri, string KeyVaultURI)
         {
-            string serviceAccountName = ConfigurationManager.AppSettings["serviceAccountName"];
-            string serviceAccountPasswordClearText = ConfigurationManager.AppSettings["serviceAccountPasswordClearText"];
-            SecureString tenantAdminPassword = CommonUtils.GetSecureString(serviceAccountPasswordClearText);
-
             AuthenticationResult result = null;
             try
             {
-                result = await lazyApp.Value.AcquireTokenSilent(getScopes(), serviceAccountName).ExecuteAsync();
+                result = await lazyApp.Value.AcquireTokenSilent(getScopes(), Configurations.ServiceAccountName).ExecuteAsync();
                 Console.WriteLine($"{nameof(MSALBasedAuthenticationManager)} - Obtained token from cache");
             }
-            catch (MsalUiRequiredException ex)
+            catch (MsalUiRequiredException)
             {
                 //As per MSFT attept to read silently from cache. On exception try the actual method
                 //https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-net-acquire-token-silently
 
                 result = await lazyApp.Value.AcquireTokenByUsernamePassword(getScopes(),
-                    serviceAccountName,
-                    tenantAdminPassword).ExecuteAsync();
+                    Configurations.ServiceAccountName,
+                    Configurations.ServiceAccountSecurePassword).ExecuteAsync();
                 Output.WriteLine(ConsoleColor.Yellow, $"{nameof(MSALBasedAuthenticationManager)} - Token not in cache. Obtained new.");
             }
             var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(result.AccessToken);
