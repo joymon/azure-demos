@@ -16,7 +16,7 @@ namespace ROPCAuthentication
         /// 
         /// </summary>
         /// <param name="spo">Unfortunately this is not required in this implementation. A human readable url is enough.</param>
-        /// <returns></returns>
+        /// <retu</returns>
         async Task ISharePointManager.DownloadFile(Spo spo)
         {
 
@@ -33,8 +33,11 @@ namespace ROPCAuthentication
                 context.ExecuteQueryRetry();
 
                 var fileOut = Path.Combine(ConfigurationManager.AppSettings["DownloadBasePath"], file.Name);
-
-                if (!System.IO.File.Exists(fileOut))
+                if (System.IO.File.Exists(fileOut))
+                {
+                    Output.WriteLine($"Skipped downloading as file already exists at {fileOut}");
+                }
+                else
                 {
                     using (Stream fileStream = new FileStream(fileOut, FileMode.Create))
                     {
@@ -43,8 +46,8 @@ namespace ROPCAuthentication
                             streamFromSPS.Value.CopyTo(fileStream);
                         }
                     }
+                    Output.WriteLine($"Downloaded to {fileOut}");
                 }
-                Output.WriteLine($"Downloaded to {fileOut}");
             }
         }
 

@@ -44,6 +44,22 @@ namespace ROPCAuthentication
         /// <returns></returns>
         async Task ISharePointManager.DownloadFile(Spo spo)
         {
+            await DownloadUsingNativeGraphWay(spo);
+            //await DownloadUsingHttpRequest(spo);
+        }
+
+        async private Task DownloadUsingNativeGraphWay(Spo spo)
+        {
+            GraphServiceClient graphClient = await GetGraphServiceClient();
+            var file = await GetFileFromSpo(spo);
+            var inputFileStream = await graphClient.Sites[spo.siteId].Drives[spo.LibraryId].Items[spo.FileId].Content.Request().GetAsync();
+            using (FileStream fileStream = System.IO.File.Create(Path.Combine(ConfigurationManager.AppSettings["DownloadBasePath"], file.Name)))
+            {
+                inputFileStream.CopyTo(fileStream);
+            }
+        }
+        private static async Task DownloadUsingHttpRequest(Spo spo)
+        {
             DriveItem file = await GetFileFromSpo(spo);
             const long DefaultChunkSize = 2000 * 1024; // 50 KB, TODO: change chunk size to make it realistic for a large file.
             long ChunkSize = DefaultChunkSize;
@@ -58,6 +74,7 @@ namespace ROPCAuthentication
 
                 // Get the download URL. This URL is preauthenticated and has a short TTL.
                 object downloadUrl;
+
                 file.AdditionalData.TryGetValue("@microsoft.graph.downloadUrl", out downloadUrl);
 
                 // Get the number of bytes to download. calculate the number of chunks and determine
@@ -105,16 +122,14 @@ namespace ROPCAuthentication
             }
         }
         #endregion
-        
+
         private static async Task<DriveItem> GetFileFromSpo(Spo spo)
         {
             GraphServiceClient graphClient = await GetGraphServiceClient();
-            var siteId = spo.siteId;  //This will be getting from the Response Message
-            var docLibraryId = spo.LibraryId;
             //This will be getting from the Response Message
-            var FileId = spo.FileId;
-            var site = await graphClient.Sites[siteId].Request().GetAsync();
-            var file = await graphClient.Sites[siteId].Drives[docLibraryId].Items[FileId].Request().GetAsync();
+            //This will be getting from the Response Message
+            var site = await graphClient.Sites[spo.siteId].Request().GetAsync();
+            var file = await graphClient.Sites[spo.siteId].Drives[spo.LibraryId].Items[spo.FileId].Request().GetAsync();
             return file;
         }
 

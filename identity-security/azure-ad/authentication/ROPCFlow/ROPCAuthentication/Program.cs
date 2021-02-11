@@ -17,6 +17,7 @@ namespace ROPCAuthentication
         {
             var easyConsoleMenu = new Menu()
                 .Add("GraphAPI - List Root Site (just to check authentication)", async (token) => await ListRootSiteUsingGraphAPI())
+                
                 .Add("GraphAPI - List sites x2 (confirm JWT token caching)", async (token) => await ListSites2Times())
                 .Add("GraphAPI - Download file", async (token) => await DownloadFileUsingGraphAPI())
                 .Add("PnPFramework - List Root Site (just to check authentication)", async (token) => await ListRootSiteUsingPnPFramework())
@@ -76,6 +77,7 @@ namespace ROPCAuthentication
                 var file = await SharePointManagerFactory.Get(SharePointInteractionType.GraphAPI).GetFileAsync(spoObj);
                 if (file == null)
                 {
+                    Output.WriteLine(ConsoleColor.Red, $"File with id {spoObj.FileId} does not exists.");
                     return;
                 }
                 else
