@@ -139,6 +139,7 @@ namespace ROPCAuthentication
             IAuthenticationManager authenticationManager = AuthenticationManagerFactory.Get();
             return await authenticationManager.GetAccessTokenAsync(new Uri("https://graph.microsoft.com/"), KeyVaultURI);
         }
+        // TODO - Use MSAL Provider instead of Delegate... https://docs.microsoft.com/en-us/graph/sdks/choose-authentication-providers?tabs=CS#UsernamePasswordProvider
         async private static Task<GraphServiceClient> GetGraphServiceClient()
         {
             string accessToken = await GetAccessToken();
