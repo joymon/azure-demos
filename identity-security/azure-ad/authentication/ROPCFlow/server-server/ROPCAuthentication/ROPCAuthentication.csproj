@@ -310,7 +310,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphAPI\AADAuthenticationManager.cs" />
     <Compile Include="GraphAPI\AuthenticationManagerFactory.cs" />
     <Compile Include="CommonUtils.cs" />
     <Compile Include="Configurations.cs" />
