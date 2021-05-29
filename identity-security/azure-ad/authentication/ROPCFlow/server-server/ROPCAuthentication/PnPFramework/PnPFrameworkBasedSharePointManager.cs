@@ -17,7 +17,7 @@ namespace ROPCAuthentication
         /// </summary>
         /// <param name="spo">Unfortunately this is not required in this implementation. A human readable url is enough.</param>
         /// <retu</returns>
-        async Task ISharePointManager.DownloadFile(Spo spo)
+        async Task ISharePointManager.DownloadFile(SPOFile spo, string filePathToDownload )
         {
 
             var authManager = new AuthenticationManager(Configurations.AADAppregistrationId,
@@ -32,7 +32,7 @@ namespace ROPCAuthentication
                 ClientResult<Stream> streamFromSPS = file.OpenBinaryStream();
                 context.ExecuteQueryRetry();
 
-                var fileOut = Path.Combine(ConfigurationManager.AppSettings["DownloadBasePath"], file.Name);
+                var fileOut = Path.Combine(filePathToDownload, file.Name);
                 if (System.IO.File.Exists(fileOut))
                 {
                     Output.WriteLine($"Skipped downloading as file already exists at {fileOut}");
@@ -51,7 +51,7 @@ namespace ROPCAuthentication
             }
         }
 
-        Task<DriveItem> ISharePointManager.GetFileAsync(Spo spo)
+        Task<DriveItem> ISharePointManager.GetFileAsync(SPOFile spo)
         {
             throw new System.NotImplementedException();
         }

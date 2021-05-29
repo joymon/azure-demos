@@ -2,9 +2,9 @@
 
 namespace ROPCAuthentication
 {
-    public class CommonUtils
+    static public class StringExtensions
     {
-        internal static SecureString GetSecureString(string pw)
+        internal static SecureString ToSecureString(this string pw)
         {
             SecureString securePassword = new SecureString();
 

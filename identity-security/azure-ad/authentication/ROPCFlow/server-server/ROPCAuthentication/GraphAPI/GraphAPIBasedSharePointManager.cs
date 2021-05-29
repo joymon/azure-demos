@@ -26,7 +26,7 @@ namespace ROPCAuthentication
                                     WebUrl:{site.WebUrl}");
 
         }
-        async Task<DriveItem> ISharePointManager.GetFileAsync(Spo spo)
+        async Task<DriveItem> ISharePointManager.GetFileAsync(SPOFile spo)
         {
             Output.WriteLine($"{nameof(GraphAPIBasedSharePointManager)}.{nameof(ISharePointManager.GetFileAsync)} - Start");
             DriveItem file = await GetFileFromSpo(spo);
@@ -42,23 +42,24 @@ namespace ROPCAuthentication
         /// </summary>
         /// <param name="spo"></param>
         /// <returns></returns>
-        async Task ISharePointManager.DownloadFile(Spo spo)
+        async Task ISharePointManager.DownloadFile(SPOFile spo, string filePathToDownload)
         {
-            await DownloadUsingNativeGraphWay(spo);
+            await DownloadUsingNativeGraphWay(spo,filePathToDownload);
             //await DownloadUsingHttpRequest(spo);
         }
 
-        async private Task DownloadUsingNativeGraphWay(Spo spo)
+        async private Task DownloadUsingNativeGraphWay(SPOFile spo,string filePathToDownload)
         {
             GraphServiceClient graphClient = await GetGraphServiceClient();
             var file = await GetFileFromSpo(spo);
-            var inputFileStream = await graphClient.Sites[spo.siteId].Drives[spo.LibraryId].Items[spo.FileId].Content.Request().GetAsync();
-            using (FileStream fileStream = System.IO.File.Create(Path.Combine(ConfigurationManager.AppSettings["DownloadBasePath"], file.Name)))
+            var inputFileStream = await graphClient.Sites[spo.SiteId].Drives[spo.LibraryId].Items[spo.FileId].Content.Request().GetAsync();
+            
+            using (FileStream fileStream = System.IO.File.Create(Path.Combine(filePathToDownload, file.Name)))
             {
                 inputFileStream.CopyTo(fileStream);
             }
         }
-        private static async Task DownloadUsingHttpRequest(Spo spo)
+        private static async Task DownloadUsingHttpRequest(SPOFile spo,string filePathToDownload)
         {
             DriveItem file = await GetFileFromSpo(spo);
             const long DefaultChunkSize = 2000 * 1024; // 50 KB, TODO: change chunk size to make it realistic for a large file.
@@ -86,8 +87,8 @@ namespace ROPCAuthentication
                 int lastChunkSize = Convert.ToInt32(size % DefaultChunkSize) - numberOfChunks - 1;
                 if (lastChunkSize > 0) { numberOfChunks++; }
 
-                // Create a file stream to contain the downloaded file.
-                using (FileStream fileStream = System.IO.File.Create(Path.Combine(ConfigurationManager.AppSettings["DownloadBasePath"], file.Name)))
+               
+                using (FileStream fileStream = System.IO.File.Create(Path.Combine(filePathToDownload, file.Name)))
                 {
                     for (int i = 0; i < numberOfChunks; i++)
                     {
@@ -123,13 +124,13 @@ namespace ROPCAuthentication
         }
         #endregion
 
-        private static async Task<DriveItem> GetFileFromSpo(Spo spo)
+        private static async Task<DriveItem> GetFileFromSpo(SPOFile spo)
         {
             GraphServiceClient graphClient = await GetGraphServiceClient();
             //This will be getting from the Response Message
             //This will be getting from the Response Message
-            var site = await graphClient.Sites[spo.siteId].Request().GetAsync();
-            var file = await graphClient.Sites[spo.siteId].Drives[spo.LibraryId].Items[spo.FileId].Request().GetAsync();
+            var site = await graphClient.Sites[spo.SiteId].Request().GetAsync();
+            var file = await graphClient.Sites[spo.SiteId].Drives[spo.LibraryId].Items[spo.FileId].Request().GetAsync();
             return file;
         }
 

@@ -1,18 +1,20 @@
-﻿namespace ROPCAuthentication
+﻿using System;
+
+namespace ROPCAuthentication
 {
     public class SharePointManagerFactory
     {
         public static ISharePointManager Get(SharePointInteractionType type)
         {
-            if (type == SharePointInteractionType.GraphAPI)
+            switch (type)
             {
-                return new GraphAPIBasedSharePointManager();
-            }
-            else
-            {
-                return new PnPFrameworkBasedSharePointManager();
+                case SharePointInteractionType.GraphAPI:
+                    return new GraphAPIBasedSharePointManager();
+                case SharePointInteractionType.PnPFramework:
+                    return new PnPFrameworkBasedSharePointManager();
+                default:
+                    throw new ArgumentException($"Argument value {type} is invalid for the Enum {nameof(SharePointInteractionType)}");
             }
         }
-        
     }
 }

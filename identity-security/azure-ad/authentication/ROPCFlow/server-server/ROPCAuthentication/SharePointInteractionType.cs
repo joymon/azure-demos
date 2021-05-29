@@ -1,6 +1,7 @@
 ﻿namespace ROPCAuthentication
 {
-    public enum SharePointInteractionType {
+    public enum SharePointInteractionType 
+    {
         GraphAPI,
         PnPFramework
     }

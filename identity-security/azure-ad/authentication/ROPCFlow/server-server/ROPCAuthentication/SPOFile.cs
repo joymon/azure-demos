@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace ROPCAuthentication
 {
-    public class Spo
+    public class SPOFile
     {
-
-        public string siteId { get; set; }
+        public string SiteId { get; set; }
         public string LibraryId { get; set; }
         public string FileId { get; set; }
-
-
     }
 }

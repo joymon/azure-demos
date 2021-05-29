@@ -6,6 +6,8 @@ namespace ROPCAuthentication
 {
     class Configurations
     {
+        internal static readonly string BasePathToDownloadFile =  ConfigurationManager.AppSettings["DownloadBasePath"];
+
         public static string AADTenantId => ConfigurationManager.AppSettings["AADTenantId"];
         public static string SiteId => ConfigurationManager.AppSettings["SiteId"];
         public static string LibraryId => ConfigurationManager.AppSettings["LibraryId"];
@@ -32,7 +34,7 @@ namespace ROPCAuthentication
         private static SecureString getSecurePassword()
         {
             string serviceAccountPasswordClearText = ConfigurationManager.AppSettings["serviceAccountPasswordClearText"];
-            return CommonUtils.GetSecureString(serviceAccountPasswordClearText);
+            return serviceAccountPasswordClearText.ToSecureString();
         }
         #region To work with PnPFrameworkLibrary
         public static string SubSiteURL => ConfigurationManager.AppSettings["SubSiteURL"];
